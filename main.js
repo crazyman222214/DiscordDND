@@ -4,11 +4,18 @@ const Discord = require("discord.js");
 const config = require("./Config.json");
 
 //Constants for OpenAI API
-const openai = require("openai");
+const  openAiAPI = require("openai");
 
+const openAi = new openAiAPI(
+    {apiKey: config.openAI_Key}
+);
+async function promptAI(prompt) {
 
-async function promptAI() {
-   const completion = await openai.Chat.Completions.
+    const chatCompletion = await openAi.chat.completions.create({
+        messages: [{ role: "system", content: prompt }],
+        model: "gpt-3.5-turbo",
+    });
+    return chatCompletion.choices[0].message.content;
 }
 
 
@@ -16,7 +23,7 @@ async function promptAI() {
 const client = new Discord.Client({
     intents:[Discord.GatewayIntentBits.Guilds,
         Discord.GatewayIntentBits.GuildMessages,
-        Discord.GatewayIntentBits.MessageContent]})
+        Discord.GatewayIntentBits.MessageContent]});
 
 //This runs when the bot is ready to start being used
 client.on("ready", () =>{
@@ -34,7 +41,7 @@ client.on("messageCreate", msg => {
 
 
     if (command === "ping") {
-        msg.reply(args.join(" "));
+        promptAI(args.join(" ")).then(a => msg.reply(a));
     }
 });
 
