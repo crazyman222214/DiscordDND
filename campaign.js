@@ -1,7 +1,9 @@
 const r = "L";
 
+
+
 module.exports = {
-    pingPong: function (){
+    generatePrompt: function (prompt){
         return r;
     }
 }

@@ -1,5 +1,12 @@
+
+//Constants for Discord API
 const Discord = require("discord.js");
 const config = require("./Config.json");
+
+//Constants for OpenAI API
+const { Configuration, OpenAIApi } = require("openai");
+
+
 
 const client = new Discord.Client({
     intents:[Discord.GatewayIntentBits.Guilds,
@@ -22,7 +29,7 @@ client.on("messageCreate", msg => {
 
 
     if (command === "ping") {
-        msg.reply("pong");
+        msg.reply(args.join(" "));
     }
 });
 
