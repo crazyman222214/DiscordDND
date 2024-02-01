@@ -1,3 +1,5 @@
+//Constants for Node
+const fs = require("fs");
 
 //Constants for Discord API
 const Discord = require("discord.js");
@@ -5,16 +7,26 @@ const config = require("./Config.json");
 
 //Constants for OpenAI API
 const  openAiAPI = require("openai");
-
 const openAi = new openAiAPI(
     {apiKey: config.openAI_Key}
 );
-async function promptAI(prompt) {
+const aiRole = `You are a Dungeon Master running a dnd campaign. Please describe to the players the scenery of the world in detail.
+Also make sure that you don't do any actions for the players. 
+Let the players tell you how to control the campaign and describe what their actions do in relation of the world. Limit your descriptions to two paragraphs`;
 
+const aiMessages = [{"role": "system", "content": aiRole}];
+
+async function promptAI(prompt) {
+    var message = { role: "user", content: prompt };
+    aiMessages.push(message);
     const chatCompletion = await openAi.chat.completions.create({
-        messages: [{ role: "system", content: prompt }],
-        model: "gpt-3.5-turbo",
+        max_tokens: 200,
+        temperature: 0.9,
+        presence_penalty: -1,
+        messages: aiMessages,
+        model: "gpt-3.5-turbo-1106",
     });
+    console.log(chatCompletion.model);
     return chatCompletion.choices[0].message.content;
 }
 
