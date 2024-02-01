@@ -10,19 +10,24 @@ const  openAiAPI = require("openai");
 const openAi = new openAiAPI(
     {apiKey: config.openAI_Key}
 );
-const aiRole = `You are a Dungeon Master running a dnd campaign. Please describe to the players the scenery of the world in detail.
+const aiRole = `You are a Dungeon Master running a dnd campaign. 
+Please describe to the players the scenery of the world in detail.
 Also make sure that you don't do any actions for the players. 
-Let the players tell you how to control the campaign and describe what their actions do in relation of the world. Limit your descriptions to two paragraphs`;
+Let the players tell you how to control the campaign and describe what their actions do in relation of the world.
+Encourage Dialog between characters within the world. Keep your response under 200 tokens`;
 
 const aiMessages = [{"role": "system", "content": aiRole}];
 
 async function promptAI(prompt) {
     var message = { role: "user", content: prompt };
     aiMessages.push(message);
+    if (aiMessages.length > 5) {
+        aiMessages.splice(1, 1);
+    }
     const chatCompletion = await openAi.chat.completions.create({
-        max_tokens: 200,
-        temperature: 0.9,
-        presence_penalty: -1,
+        max_tokens: 250,
+        top_p: 0.3,
+        presence_penalty: 2,
         messages: aiMessages,
         model: "gpt-3.5-turbo-1106",
     });
