@@ -4,10 +4,15 @@ const Discord = require("discord.js");
 const config = require("./Config.json");
 
 //Constants for OpenAI API
-const { Configuration, OpenAIApi } = require("openai");
+const openai = require("openai");
 
 
+async function promptAI() {
+   const completion = await openai.Chat.Completions.
+}
 
+
+//Discord stuff
 const client = new Discord.Client({
     intents:[Discord.GatewayIntentBits.Guilds,
         Discord.GatewayIntentBits.GuildMessages,
