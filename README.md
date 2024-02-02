@@ -9,9 +9,7 @@ This is a DM for a Dungeons and Dragons Campaign. Ideally, this will:
 Each campaign will be unique, while being able to dynamically update the current campaign according to how the players act
 
 **_Sounds Like Something An AI would do_**
-
 #
-
 This bot should be focused more on roleplaying and immersiveness
 
 *More dialog, less game actions*
