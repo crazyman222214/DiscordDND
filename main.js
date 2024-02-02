@@ -14,16 +14,20 @@ const aiRole = `You are a Dungeon Master running a dnd campaign.
 Please describe to the players the scenery of the world in detail.
 Also make sure that you don't do any actions for the players. 
 Let the players tell you how to control the campaign and describe what their actions do in relation of the world.
-Encourage Dialog between characters within the world. Keep your response under 200 tokens`;
+Encourage Dialog between characters within the world.
+Keep your response under 200 tokens`;
 
-const aiMessages = [{"role": "system", "content": aiRole}];
+const aiMessages = [{role: "system", content: aiRole}];
+const aiResponses = [];
 
 async function promptAI(prompt) {
     var message = { role: "user", content: prompt };
-    aiMessages.push(message);
-    if (aiMessages.length > 5) {
-        aiMessages.splice(1, 1);
+    if (aiMessages.length > 3) {
+        await summarizeAI();
+        console.log(aiMessages);
     }
+    aiMessages.push(message);
+
     const chatCompletion = await openAi.chat.completions.create({
         max_tokens: 250,
         top_p: 0.3,
@@ -31,10 +35,31 @@ async function promptAI(prompt) {
         messages: aiMessages,
         model: "gpt-3.5-turbo-1106",
     });
-    console.log(chatCompletion.model);
+    aiResponses.push(chatCompletion.choices[0].message);
     return chatCompletion.choices[0].message.content;
 }
 
+async function summarizeAI() {
+    const summaryAiRole = `You are a summary ai. Your task is to summarize the messages you are given into a short story. Do not give information that is not needed for the most recent message`;
+    const summaryMessages = [{role: "system", content: summaryAiRole}];
+    console.log(aiResponses);
+    let chatSummary;
+    for (var i = 0; i < aiMessages.length-1; i++) {
+        summaryMessages.push(aiMessages[i+1]);
+        summaryMessages.push(aiResponses[i]);
+    }
+
+    console.log(summaryMessages);
+    chatSummary = await openAi.chat.completions.create({
+        max_tokens: 250,
+        top_p: 0.75,
+        messages: summaryMessages,
+        model: "gpt-3.5-turbo-1106"
+    });
+
+    aiMessages.splice(1);
+    aiMessages.push({role: "user", content: chatSummary.choices[0].message.content});
+}
 
 //Discord stuff
 const client = new Discord.Client({
@@ -59,6 +84,10 @@ client.on("messageCreate", msg => {
 
     if (command === "ping") {
         promptAI(args.join(" ")).then(a => msg.reply(a));
+    }
+
+    if (command === "start") {
+        promptAI("Describe the world of this campaign").then(a => msg.reply(a));
     }
 });
 
