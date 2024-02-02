@@ -10,6 +10,8 @@ const  openAiAPI = require("openai");
 const openAi = new openAiAPI(
     {apiKey: config.openAI_Key}
 );
+
+//The message for the DND Ai's role
 const aiRole = `You are a Dungeon Master running a dnd campaign. 
 Please describe to the players the scenery of the world in detail.
 Also make sure that you don't do any actions for the players. 
@@ -17,12 +19,20 @@ Let the players tell you how to control the campaign and describe what their act
 Encourage Dialog between characters within the world.
 Keep your response under 200 tokens`;
 
+
+// A 'system' message tells the Ai how it should behave. A set of rules
 const aiMessages = [{role: "system", content: aiRole}];
 const aiResponses = [];
 
+/**
+ * This function is the main function prompting the Ai <br>
+ * It creates a chat completion of the messages that the user has given
+ * @param prompt The input to the Ai
+ * @returns {Promise<string>} The Promise version of the response from OpenAI (async)
+ */
 async function promptAI(prompt) {
     var message = { role: "user", content: prompt };
-    if (aiMessages.length > 3) {
+    if (aiMessages.length > 3) { //only summarizes if there are 3 prompts (Technically 4 but the first is the System message)
         await summarizeAI();
         console.log(aiMessages);
     }
@@ -39,6 +49,11 @@ async function promptAI(prompt) {
     return chatCompletion.choices[0].message.content;
 }
 
+/**
+ * This is the method that summarizes the chat log for the Ai so that it doesn't spit out the same answer for previous responses <br>
+ * Takes in both the input and output of the Ai conversation
+ * @returns Promise<void> Although it returns, we never capture the response
+ */
 async function summarizeAI() {
     const summaryAiRole = `You are a summary ai. Your task is to summarize the messages you are given into a short story. Do not give information that is not needed for the most recent message`;
     const summaryMessages = [{role: "system", content: summaryAiRole}];
@@ -51,7 +66,7 @@ async function summarizeAI() {
 
     console.log(summaryMessages);
     chatSummary = await openAi.chat.completions.create({
-        max_tokens: 250,
+        max_tokens: 200,
         top_p: 0.75,
         messages: summaryMessages,
         model: "gpt-3.5-turbo-1106"
@@ -73,8 +88,13 @@ client.on("ready", () =>{
 });
 
 
-//This runs when there is a new message in the server
-client.on("messageCreate", msg => {
+/**
+ * This is the event that runs when a message is created in Discord<br>
+ * This method checks if it has the correct prefix for a command<br>
+ * And it checks if the command is valid:<br>
+ * &emsp; if it is, then it runs the according function
+ */
+function onMessageCreate(msg) {
     if(msg.author.bot) return; // Doesn't respond to bots
     if(msg.content.indexOf(config.prefix) !== 0) return; // Only responding to existing commands that start with "!"
     const args = msg.content.slice(config.prefix.length).trim().split(/ +/g); // Configure arguments for the commands
@@ -89,6 +109,8 @@ client.on("messageCreate", msg => {
     if (command === "start") {
         promptAI("Describe the world of this campaign").then(a => msg.reply(a));
     }
-});
+}
+client.on("messageCreate", (msg) => {onMessageCreate(msg)});
+
 
 client.login(config.token);
