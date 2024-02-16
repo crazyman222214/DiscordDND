@@ -1,3 +1,11 @@
+module.exports = {
+    Discord : require("discord.js"),
+    config: require("./Config.json"),
+
+};
+
+
+
 //Constants for Node
 const fs = require("fs");
 
@@ -7,9 +15,7 @@ const config = require("./Config.json");
 
 //Constants for OpenAI API
 const  openAiAPI = require("openai");
-const openAi = new openAiAPI(
-    {apiKey: config.openAI_Key}
-);
+const openAi = new openAiAPI({apiKey: config.openAI_Key});
 
 //The message for the DND Ai's role
 const aiRole = `You are a Dungeon Master running a dnd campaign. 
