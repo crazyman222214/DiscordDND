@@ -18,13 +18,14 @@ const  openAiAPI = require("openai");
 const openAi = new openAiAPI({apiKey: config.openAI_Key});
 
 //The message for the DND Ai's role
-const aiRole = `You are a Dungeon Master running a dnd campaign. 
+const aiRole = `You are a Dungeon Master running a dnd campaign.
 Please describe to the players the scenery of the world in detail.
-Also make sure that you don't do any actions for the players. 
+Also make sure that you don't do any actions for the players.
 Let the players tell you how to control the campaign and describe what their actions do in relation of the world.
-Encourage Dialog between characters within the world.
-Keep your response under 200 tokens`;
+Encourage Dialog between characters within the world.`;
+/*
 
+ */
 
 // A 'system' message tells the Ai how it should behave. A set of rules
 const aiMessages = [{role: "system", content: aiRole}];
@@ -61,7 +62,7 @@ async function promptAI(prompt) {
  * @returns Promise<void> Although it returns, we never capture the response
  */
 async function summarizeAI() {
-    const summaryAiRole = `You are a summary ai. Your task is to summarize the messages you are given into a short story. Do not give information that is not needed for the most recent message`;
+    const summaryAiRole = `You are a summary ai. Your task is to summarize the messages you are given into a short story. Do not give information that is not needed to give context for the most recent message`;
     const summaryMessages = [{role: "system", content: summaryAiRole}];
     console.log(aiResponses);
     let chatSummary;
