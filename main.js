@@ -114,7 +114,7 @@ function onMessageCreate(msg) {
     }
 
     if (command === "start") {
-        promptAI("Describe the world of this campaign").then(a => msg.reply(a));
+        promptAI("Please describe the start of a fantasy story with a clear setting").then(a => msg.reply(a));
     }
 }
 client.on("messageCreate", (msg) => {onMessageCreate(msg)});
