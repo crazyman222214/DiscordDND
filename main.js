@@ -62,7 +62,7 @@ async function promptAI(prompt) {
  * @returns Promise<void> Although it returns, we never capture the response
  */
 async function summarizeAI() {
-    const summaryAiRole = `You are a summary ai. Your task is to summarize the messages you are given into a short story. Do not give information that is not needed to give context for the most recent message`;
+    const summaryAiRole = `You are a summary ai. Your task is to summarize the messages you are given into a short story. Do not give information that is not relevant to the most recent message`;
     const summaryMessages = [{role: "system", content: summaryAiRole}];
     console.log(aiResponses);
     let chatSummary;
