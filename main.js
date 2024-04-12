@@ -1,6 +1,3 @@
-Discord = require("discord.js");
-config = require("./Config.json");
-
 //Constants for Node
 const fs = require("fs");
 
@@ -16,6 +13,7 @@ const openAi = new openAiAPI({apiKey: config.openAI_Key});
 const aiRole = `You are a Dungeon Master running a dnd campaign.
 Please describe to the players the scenery of the world in detail.
 Also make sure that you don't do any actions for the players.
+Describe what the players see around them.
 Let the players tell you how to control the campaign and describe what their actions do in relation of the world.
 Encourage Dialog between characters within the world.`;
 
