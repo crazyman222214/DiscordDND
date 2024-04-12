@@ -1,10 +1,5 @@
-module.exports = {
-    Discord : require("discord.js"),
-    config: require("./Config.json"),
-
-};
-
-
+Discord = require("discord.js");
+config = require("./Config.json");
 
 //Constants for Node
 const fs = require("fs");
@@ -23,9 +18,7 @@ Please describe to the players the scenery of the world in detail.
 Also make sure that you don't do any actions for the players.
 Let the players tell you how to control the campaign and describe what their actions do in relation of the world.
 Encourage Dialog between characters within the world.`;
-/*
 
- */
 
 // A 'system' message tells the Ai how it should behave. A set of rules
 const aiMessages = [{role: "system", content: aiRole}];
@@ -108,6 +101,12 @@ function onMessageCreate(msg) {
     const command = args.shift().toLowerCase(); // Detect existing commands
 
 
+
+    /**
+     * Commands:
+     *  !ping [text] - pings the Bot with the given text
+     *  !start !TEMP! - starts a campaign
+     */
 
     if (command === "ping") {
         promptAI(args.join(" ")).then(a => msg.reply(a));
